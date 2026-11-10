@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MEAL Mentor</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0);--bg:#f3f6fb;--card:#fff;--text:#13233f;--muted:#5e7290;--line:#dde6f3;--accent:#2a6f6f;--accent2:#1d4e8f;--chip:#e7f1f0}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0d1420;--card:#141f30;--text:#e7eefb;--muted:#8da0c0;--line:#223247;--accent:#4fb3ad;--accent2:#6ea8f0;--chip:#1b2a3c}}
+:root[data-theme=dark]{--bg:#0d1420;--card:#141f30;--text:#e7eefb;--muted:#8da0c0;--line:#223247;--accent:#4fb3ad;--accent2:#6ea8f0;--chip:#1b2a3c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;padding-bottom:70px}
+.wrap{max-width:720px;margin:0 auto;padding:14px}
+h1{font-size:19px;margin:4px 0 14px;display:flex;align-items:center;gap:8px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+.k{font-size:12px;color:var(--muted);text-transform:uppercase}
+.bar{height:8px;background:var(--chip);border-radius:6px;overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);font-size:14px;font-family:inherit}
+textarea{min-height:90px}
+.btn{background:var(--accent2);color:#fff;border:0;padding:9px 13px;border-radius:9px;font-weight:600;font-size:13px;cursor:pointer}
+.btn.alt{background:var(--chip);color:var(--text)}
+.chip{display:inline-block;background:var(--chip);color:var(--text);padding:3px 9px;border-radius:99px;font-size:11px;margin-right:4px}
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding:4px 2px calc(4px + env(safe-area-inset-bottom,0));overflow-x:auto}
+.nav button{flex:1;min-width:58px;border:0;background:none;color:var(--muted);font-size:10px;padding:6px 2px;cursor:pointer}
+.nav button span{display:block;font-size:17px}
+.nav button.on{color:var(--accent2);font-weight:700}
+.tab{display:none}.tab.on{display:block}
+.empty{color:var(--muted);text-align:center;padding:14px;font-size:13px}
+.pill{font-size:10px;padding:2px 7px;border-radius:99px;background:var(--chip)}
+.status{position:fixed;top:calc(8px + env(safe-area-inset-top,0));right:8px;font-size:11px;padding:3px 8px;border-radius:99px;background:var(--chip);z-index:5}
+a{color:var(--accent2)}
+</style></head><body>
+<div class="status" id="netstat">●</div>
+<div class="wrap">
+<h1>📘 MEAL Mentor</h1>
+<section id="t-dash" class="tab on"></section>
+<section id="t-course" class="tab"></section>
+<section id="t-lib" class="tab"></section>
+<section id="t-write" class="tab"></section>
+<section id="t-assign" class="tab"></section>
+<section id="t-notes" class="tab"></section>
+<section id="t-ask" class="tab"></section>
+<section id="t-more" class="tab"></section>
+</div>
+<div class="nav">
+<button data-t="dash" class="on"><span>🏠</span>Home</button>
+<button data-t="course"><span>📚</span>Course</button>
+<button data-t="lib"><span>🗂️</span>Library</button>
+<button data-t="write"><span>✍️</span>Write-up</button>
+<button data-t="assign"><span>📝</span>Tasks</button>
+<button data-t="notes"><span>🗒️</span>Notes</button>
+<button data-t="ask"><span>💬</span>Ask</button>
+<button data-t="more"><span>⚙️</span>More</button>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+/* ---- IndexedDB ---- */
+let DB;const openDB=()=>new Promise((res,rej)=>{const r=indexedDB.open('meal-mentor',1);
+ r.onupgradeneeded=()=>{const d=r.result;['modules','files','milestones','assignments','notes','queue','meta'].forEach(s=>{if(!d.objectStoreNames.contains(s))d.createObjectStore(s,{keyPath:'id'})})};
+ r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
+const tx=(s,m='readonly')=>DB.transaction(s,m).objectStore(s);
+const put=(s,v)=>new Promise(r=>{tx(s,'readwrite').put(v).onsuccess=r});
+const del=(s,id)=>new Promise(r=>{tx(s,'readwrite').delete(id).onsuccess=r});
+const all=s=>new Promise(r=>{const o=[];tx(s).openCursor().onsuccess=e=>{const c=e.target.result;if(c){o.push(c.value);c.continue()}else r(o)}});
+const get=(s,id)=>new Promise(r=>{tx(s).get(id).onsuccess=e=>r(e.target.result)});
+const nid=()=>Date.now()+Math.random().toString(36).slice(2,6);
+
+/* ---- content: 9 modules, abbreviated offline notes ---- */
+const MODULES=[
+{id:'m1',t:'Foundations',n:'Project cycle (design→implement→monitor→evaluate→learn), Theory of Change (inputs→outputs→outcomes→impact + assumptions), logframes (goal/purpose/outputs/activities + indicators).',ex:'Kenya: a county bursary fund ToC — inputs (budget, staff) → outputs (bursaries disbursed) → outcome (retention in school) → impact (county literacy).',q:['Draw a ToC for a programme you know.','What is the difference between an output and an outcome?','Why do logframes include assumptions?']},
+{id:'m2',t:'Resource Mobilisation',n:'Donor mapping (bilateral, multilateral, foundations, county/national), funding mechanisms (grants, PPPs, affirmative action funds), concept notes (1-2 pages: problem, approach, budget ask) vs full proposals.',ex:'Kenya: County Affirmative Action Fund, NGAAF, UWEZO Fund, and donor landscapes like UNDP, FCDO, GIZ active in county programmes.',q:['List 3 funding mechanisms open to a Kenyan county department.','What goes in a concept note that a full proposal expands on?','Map two donors active in your sector.']},
+{id:'m3',t:'Indicators & M&E Plans',n:'SMART indicators, indicator types (input/output/outcome/impact), M&E plan components: indicator, baseline, target, means of verification, frequency, responsibility.',ex:'Indicator: "% of GBV survivors accessing recovery services within 48hrs" — baseline 40%, target 70% by year 2.',q:['Write one SMART indicator for a youth employment programme.','What is a means of verification?','Why set a baseline before a target?']},
+{id:'m4',t:'Budgeting & Donor Reporting',n:'Line-item vs activity-based budgets, indirect/overhead costs, budget variance, narrative vs financial donor reports, reporting calendars.',ex:'A donor requires quarterly financial + narrative reports with a 10% variance threshold before explanation is required.',q:['What is budget variance and why track it?','Name two things a narrative report covers that a financial one does not.']},
+{id:'m5',t:'Research Design',n:'Quant vs qual vs mixed methods, experimental/quasi-experimental/non-experimental designs, sampling (probability vs non-probability), validity & reliability.',ex:'A quasi-experimental design comparing bursary recipients to a matched non-recipient group across similar sub-counties.',q:['When would you choose mixed methods over quant alone?','Define sampling frame.']},
+{id:'m6',t:'Data Collection',n:'Tools: surveys, KIIs, FGDs, observation. Digital tools: KoboToolbox, ODK. Ethics: informed consent, data protection.',ex:'KoboToolbox form for household bursary verification, with GPS and photo capture, used in Kenyan counties.',q:['What ethical steps are needed before a household survey?','Compare a KII and an FGD.']},
+{id:'m7',t:'Statistics & Demography',n:'Descriptive stats (mean, median, mode, std dev), demographic indicators (fertility, mortality, dependency ratio), disaggregation by sex/age/county.',ex:'KNBS 2019 census data used to disaggregate programme reach by county and age group.',q:['What does dependency ratio tell a planner?','When is median more useful than mean?']},
+{id:'m8',t:'Data Management & Software',n:'Data cleaning, coding, storage, tools: Excel, SPSS, R, Power BI, dashboards for county reporting.',ex:'A county M&E dashboard built in Power BI pulling from a KoboToolbox-linked database.',q:['What is data cleaning and why does it matter?','Name one free tool for statistical analysis.']},
+{id:'m9',t:'Accountability & Learning',n:'Feedback mechanisms, complaint-response systems, after-action reviews, adaptive management, knowledge management.',ex:'A GBV centre toll-free feedback line reviewed monthly to adapt service delivery.',q:['What is adaptive management?','Design a simple feedback loop for a programme you support.']}
+];
+const LIB=[['MIT OCW','https://ocw.mit.edu'],['J-PAL','https://www.povertyactionlab.org'],['BetterEvaluation','https://www.betterevaluation.org'],['OECD-DAC criteria','https://www.oecd.org/dac/evaluation'],['World Bank IEG','https://ieg.worldbankgroup.org'],['USAID Learning Lab','https://usaidlearninglab.org'],['KoboToolbox','https://www.kobotoolbox.org'],['KNBS','https://www.knbs.or.ke'],['DHS Program','https://dhsprogram.com'],['Kenya Open Data','https://www.opendata.go.ke'],['APHRC','https://aphrc.org'],['Twaweza','https://twaweza.org'],['CLEAR Anglophone Africa','https://clear-aa.co.za'],['AfrEA','https://afrea.org'],['Africa Evidence Network','https://africaevidencenetwork.org'],['AfDB IDEV','https://idev.afdb.org'],['AERC','https://aercafrica.org'],['KIPPRA','https://kippra.or.ke'],['Kenya School of Government','https://ksg.ac.ke'],['Daystar University','https://daystar.ac.ke'],['University of Nairobi','https://uonbi.ac.ke'],['Strathmore University','https://strathmore.edu'],['Kenyatta University','https://ku.ac.ke'],['Candid Learning','https://learning.candid.org'],['fundsforNGOs','https://www.fundsforngos.org'],['UNDP Evaluation Resource Centre','https://erc.undp.org'],['R for Data Science (free)','https://r4ds.hadley.nz'],['UCLA Stats resources','https://stats.oarc.ucla.edu']];
+const MILES=['Topic & gap','Problem statement','Objectives & questions','Literature review','Methodology','Data collection','Analysis','Findings','Conclusions','Final edit'];
+
+let S={done:{},q:[],lib:{}};
+async function load(){DB=await openDB();const m=await get('meta','s');if(m)S=Object.assign(S,m.v);
+ for(const mo of MILES){if(!await get('milestones',mo))await put('milestones',{id:mo,text:'',notes:''})}
+ render()}
+const save=()=>put('meta',{id:'s',v:S});
+function go(t){document.querySelectorAll('.tab').forEach(e=>e.classList.remove('on'));$('t-'+t).classList.add('on');
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));render(t)}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.t));
+function toast(t){const m=document.createElement('div');m.textContent=t;m.style='position:fixed;left:12px;right:12px;bottom:76px;background:var(--accent2);color:#fff;padding:10px 14px;border-radius:10px;z-index:9;font-size:13px';document.body.appendChild(m);setTimeout(()=>m.remove(),2500)}
+
+async function render(which){
+ const done=Object.values(S.done).filter(Boolean).length,cpct=Math.round(done/MODULES.length*100);
+ const miles=await all('milestones'),mdone=miles.filter(x=>x.text.trim()).length,wpct=Math.round(mdone/MILES.length*100);
+ if(!which||which==='dash'){
+  $('t-dash').innerHTML=`<div class="card"><div class="k">Course progress</div><div class="bar"><i style="width:${cpct}%"></i></div><small>${done}/${MODULES.length} modules</small></div>
+  <div class="card"><div class="k">Write-up progress</div><div class="bar"><i style="width:${wpct}%"></i></div><small>${mdone}/${MILES.length} milestones</small></div>
+  <div class="card"><div class="k">Ask queue</div><div>${S.q.length} item${S.q.length===1?'':'s'} waiting${S.q.length?' — open Ask when online':''}</div></div>`;
+ }
+ if(!which||which==='course'){
+  $('t-course').innerHTML='<h2 style="font-size:15px">9 modules</h2>'+MODULES.map(m=>`<div class="card"><div class="row" style="border:0;padding:0"><b>${esc(m.t)}</b><input type="checkbox" ${S.done[m.id]?'checked':''} onchange="S.done['${m.id}']=this.checked;save();render('course');render('dash')"></div><p style="font-size:13px">${esc(m.n)}</p><p style="font-size:12px;color:var(--muted)"><b>Kenyan example:</b> ${esc(m.ex)}</p><details><summary style="font-size:12px;cursor:pointer">Practice questions</summary><ul style="font-size:13px">${m.q.map(q=>`<li>${esc(q)}</li>`).join('')}</ul></details></div>`).join('');
+ }
+ if(!which||which==='lib'){
+  const files=await all('files');
+  $('t-lib').innerHTML=`<div class="card"><h2 style="font-size:15px;margin-top:0">Import a file</h2><input type="file" id="fimp"><select id="ftag" style="margin-top:8px">${MODULES.map(m=>`<option value="${m.id}">${esc(m.t)}</option>`).join('')}</select><button class="btn" style="margin-top:8px" onclick="impFile()">Add to library</button></div>
+  <h2 style="font-size:15px">My files</h2>${files.length?files.map(f=>`<div class="row"><div><b>${esc(f.name)}</b><br><span class="pill">${esc((MODULES.find(m=>m.id===f.tag)||{}).t||'')}</span></div><div><button class="btn alt" onclick="openFile('${f.id}')">Open</button> <button class="btn alt" onclick="del('files','${f.id}').then(()=>render('lib'))">✕</button></div></div>`).join(''):'<div class="empty">No files yet</div>'}
+  <h2 style="font-size:15px">Recommended resources</h2><div class="card">${LIB.map(([n,u])=>`<div class="row"><a href="${u}" target="_blank">${esc(n)}</a><input type="checkbox" ${S.lib[n]?'checked':''} onchange="S.lib['${n}']=this.checked;save()"></div>`).join('')}</div>`;
+ }
+ if(!which||which==='write'){
+  $('t-write').innerHTML=miles.map((m,i)=>`<div class="card"><b>${i+1}. ${esc(MILES[i])}</b> ${m.text.trim()?'<span class="pill">done</span>':''}<textarea id="w${i}" placeholder="Draft / notes">${esc(m.text)}</textarea><button class="btn" style="margin-top:6px" onclick="saveMile(${i})">Save</button></div>`).join('');
+ }
+ if(!which||which==='assign'){
+  const asg=await all('assignments');
+  $('t-assign').innerHTML=`<div class="card"><input id="atitle" placeholder="Title"><input id="adue" type="date" style="margin-top:6px"><button class="btn" style="margin-top:8px" onclick="addAssign()">Add task</button></div>`+(asg.length?asg.sort((a,b)=>(a.due||'9').localeCompare(b.due||'9')).map(a=>`<div class="row"><div><b>${esc(a.title)}</b><br><small>${esc(a.due||'no date')}</small></div><div><select onchange="setAssign('${a.id}',this.value)"><option ${a.status==='pending'?'selected':''}>pending</option><option ${a.status==='in progress'?'selected':''}>in progress</option><option ${a.status==='done'?'selected':''}>done</option></select> <button class="btn alt" onclick="del('assignments','${a.id}').then(()=>render('assign'))">✕</button></div></div>`).join(''):'<div class="empty">No tasks yet</div>');
+ }
+ if(!which||which==='notes'){
+  const nn=await all('notes');
+  $('t-notes').innerHTML=`<div class="card"><input id="ntitle" placeholder="Title"><textarea id="nbody" placeholder="Note" style="margin-top:6px"></textarea><select id="ntag" style="margin-top:6px"><option value="">No module tag</option>${MODULES.map(m=>`<option value="${m.id}">${esc(m.t)}</option>`).join('')}</select><button class="btn" style="margin-top:8px" onclick="addNote()">Save note</button></div>`+(nn.length?nn.reverse().map(n=>`<div class="card"><b>${esc(n.title)}</b> ${n.tag?`<span class="pill">${esc((MODULES.find(m=>m.id===n.tag)||{}).t||'')}</span>`:''}<p style="font-size:13px;white-space:pre-wrap">${esc(n.body)}</p><button class="btn alt" onclick="del('notes','${n.id}').then(()=>render('notes'))">Delete</button></div>`).join(''):'<div class="empty">No notes yet</div>');
+ }
+ if(!which||which==='ask'){
+  $('t-ask').innerHTML=`<div class="card"><select id="amode"><option value="tutor">Tutor — explain / study guide</option><option value="super">Supervisor — feedback on my draft</option></select><textarea id="aq" placeholder="Your question or pasted draft section" style="margin-top:6px"></textarea><button class="btn" style="margin-top:8px" onclick="queueAsk()">Save to queue</button></div><h2 style="font-size:15px">Queue (send when online)</h2>`+(S.q.length?S.q.map((it,i)=>`<div class="card"><span class="pill">${it.mode==='super'?'supervisor':'tutor'}</span><p style="font-size:13px;white-space:pre-wrap">${esc(it.text)}</p><button class="btn" onclick="copyPrompt(${i})">Copy prompt for Claude</button> <button class="btn alt" onclick="removeAsk(${i})">Remove</button></div>`).join(''):'<div class="empty">Nothing queued</div>');
+ }
+ if(!which||which==='more'){
+  $('t-more').innerHTML=`<div class="card"><button class="btn alt" id="themebtn">Theme: auto</button></div>
+  <div class="card"><h2 style="font-size:15px;margin-top:0">Backup</h2><button class="btn" onclick="backup()">Export backup</button><input type="file" id="restf" style="margin-top:8px" accept="application/json"><button class="btn alt" style="margin-top:8px" onclick="restore()">Restore</button></div>
+  <div class="card"><h2 style="font-size:15px;margin-top:0">Install on your phone</h2><p style="font-size:13px">Open your browser menu and choose "Add to Home screen". For offline use and true install, host this file on Netlify or GitHub Pages — ask me and I'll set that up.</p></div>`;
+  $('themebtn').onclick=()=>{const cur=document.documentElement.dataset.theme;const nx=cur==='dark'?'light':cur==='light'?'':'dark';if(nx)document.documentElement.dataset.theme=nx;else delete document.documentElement.dataset.theme;$('themebtn').textContent='Theme: '+(nx||'auto');S.theme=nx;save()};
+ }
+}
+window.saveMile=async i=>{await put('milestones',{id:MILES[i],text:$('w'+i).value,notes:''});render('write');render('dash')};
+window.addAssign=async()=>{const t=$('atitle').value.trim();if(!t)return;await put('assignments',{id:nid(),title:t,due:$('adue').value,status:'pending'});$('atitle').value='';render('assign')};
+window.setAssign=async(id,st)=>{const a=await get('assignments',id);a.status=st;await put('assignments',a)};
+window.addNote=async()=>{const t=$('ntitle').value.trim();if(!t)return;await put('notes',{id:nid(),title:t,body:$('nbody').value,tag:$('ntag').value});render('notes')};
+window.queueAsk=()=>{const t=$('aq').value.trim();if(!t)return;S.q.push({mode:$('amode').value,text:t});save();$('aq').value='';render('ask');render('dash')};
+window.removeAsk=i=>{S.q.splice(i,1);save();render('ask');render('dash')};
+window.copyPrompt=i=>{const it=S.q[i];const pre="You are an expert M&E academic supervisor and tutor. The learner works in resource mobilisation at a county government in Kenya and is preparing a Master's in M&E. Use Kenyan and East African examples. Be concise, practical and critical: ask probing questions, flag weaknesses, give clear next steps.\\n\\n"+(it.mode==='super'?'Give supervisor-style feedback (strengths, weaknesses, gaps, 3 next steps) on this draft:\\n\\n':'Explain / build a study guide for:\\n\\n')+it.text;
+ navigator.clipboard.writeText(pre).then(()=>toast('Copied — paste into Claude')).catch(()=>toast('Could not copy — select and copy manually'))};
+window.impFile=()=>{const f=$('fimp').files[0];if(!f)return;const r=new FileReader();r.onload=async()=>{await put('files',{id:nid(),name:f.name,type:f.type,tag:$('ftag').value,data:r.result});toast('Added');render('lib')};r.readAsDataURL(f)};
+window.openFile=async id=>{const f=await get('files',id);const w=window.open();w.document.write(`<title>${esc(f.name)}</title>`+(f.type.startsWith('image')?`<img src="${f.data}" style="max-width:100%">`:`<a href="${f.data}" download="${esc(f.name)}">Download ${esc(f.name)}</a>`))};
+window.backup=async()=>{const data={};for(const s of['modules','files','milestones','assignments','notes','meta'])data[s]=await all(s);
+ const blob=new Blob([JSON.stringify(data)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='meal-mentor-backup.json';a.click()};
+window.restore=()=>{const f=$('restf').files[0];if(!f)return;const r=new FileReader();r.onload=async()=>{const d=JSON.parse(r.result);for(const s in d)for(const v of d[s])await put(s,v);toast('Restored');load()};r.readAsText(f)};
+function net(){$('netstat').textContent=navigator.onLine?'🟢 Online':'⚪ Offline';$('netstat').title=navigator.onLine?'Ask tab can send to Claude':'Ask tab queues for later'}
+window.addEventListener('online',net);window.addEventListener('offline',net);net();
+if('storage' in navigator&&navigator.storage.persist)navigator.storage.persist();
+load();
+</script></body></html>
