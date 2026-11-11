@@ -2,36 +2,51 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>MEAL Mentor</title>
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0);--bg:#f3f6fb;--card:#fff;--text:#13233f;--muted:#5e7290;--line:#dde6f3;--accent:#2a6f6f;--accent2:#1d4e8f;--chip:#e7f1f0}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0d1420;--card:#141f30;--text:#e7eefb;--muted:#8da0c0;--line:#223247;--accent:#4fb3ad;--accent2:#6ea8f0;--chip:#1b2a3c}}
-:root[data-theme=dark]{--bg:#0d1420;--card:#141f30;--text:#e7eefb;--muted:#8da0c0;--line:#223247;--accent:#4fb3ad;--accent2:#6ea8f0;--chip:#1b2a3c}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;padding-bottom:70px}
-.wrap{max-width:720px;margin:0 auto;padding:14px}
-h1{font-size:19px;margin:4px 0 14px;display:flex;align-items:center;gap:8px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
-.k{font-size:12px;color:var(--muted);text-transform:uppercase}
-.bar{height:8px;background:var(--chip);border-radius:6px;overflow:hidden;margin-top:6px}
-.bar i{display:block;height:100%;background:var(--accent)}
-.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Inter:wght@400;500;600;700&display=swap');
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0);
+--bg:#faf6ef;--card:#fffdf9;--ink:#2a231d;--muted:#8a7d6e;--line:#ece3d4;
+--brand:#b8502f;--brand2:#2f6b5e;--gold:#d79a3b;--chip:#f3ead9;--shadow:0 6px 18px rgba(80,55,30,.08)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){
+--bg:#1a1611;--card:#241f19;--ink:#f3ead9;--muted:#a79a86;--line:#3a3228;
+--brand:#e07a52;--brand2:#6fc2ab;--gold:#e3b765;--chip:#332b21;--shadow:0 6px 18px rgba(0,0,0,.4)}}
+:root[data-theme=dark]{--bg:#1a1611;--card:#241f19;--ink:#f3ead9;--muted:#a79a86;--line:#3a3228;
+--brand:#e07a52;--brand2:#6fc2ab;--gold:#e3b765;--chip:#332b21;--shadow:0 6px 18px rgba(0,0,0,.4)}
+*{box-sizing:border-box}
+body{margin:0;background:
+ radial-gradient(900px 500px at 100% -10%, color-mix(in srgb, var(--gold) 14%, transparent), transparent),
+ var(--bg);
+ color:var(--ink);font-family:'Inter',system-ui,sans-serif;padding-bottom:84px;letter-spacing:.1px}
+.wrap{max-width:720px;margin:0 auto;padding:18px 16px}
+h1{font-family:'Fraunces',serif;font-weight:700;font-size:26px;margin:6px 0 4px;letter-spacing:-.02px}
+h1 .tag{display:block;font-family:'Inter',sans-serif;font-weight:500;font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-top:3px}
+h2{font-family:'Fraunces',serif;font-weight:600;font-size:17px;margin:18px 0 8px;color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600}
+.bar{height:9px;background:var(--chip);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),var(--gold));border-radius:99px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
 .row:last-child{border:0}
-input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;background:var(--bg);color:var(--text);font-size:14px;font-family:inherit}
+input,select,textarea{width:100%;padding:11px 13px;border:1.5px solid var(--line);border-radius:13px;background:var(--bg);color:var(--ink);font-size:14px;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--brand)}
 textarea{min-height:90px}
-.btn{background:var(--accent2);color:#fff;border:0;padding:9px 13px;border-radius:9px;font-weight:600;font-size:13px;cursor:pointer}
-.btn.alt{background:var(--chip);color:var(--text)}
-.chip{display:inline-block;background:var(--chip);color:var(--text);padding:3px 9px;border-radius:99px;font-size:11px;margin-right:4px}
-.nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding:4px 2px calc(4px + env(safe-area-inset-bottom,0));overflow-x:auto}
-.nav button{flex:1;min-width:58px;border:0;background:none;color:var(--muted);font-size:10px;padding:6px 2px;cursor:pointer}
-.nav button span{display:block;font-size:17px}
-.nav button.on{color:var(--accent2);font-weight:700}
-.tab{display:none}.tab.on{display:block}
-.empty{color:var(--muted);text-align:center;padding:14px;font-size:13px}
-.pill{font-size:10px;padding:2px 7px;border-radius:99px;background:var(--chip)}
-.status{position:fixed;top:calc(8px + env(safe-area-inset-top,0));right:8px;font-size:11px;padding:3px 8px;border-radius:99px;background:var(--chip);z-index:5}
-a{color:var(--accent2)}
+.btn{background:var(--brand);color:#fff;border:0;padding:11px 16px;border-radius:99px;font-weight:600;font-size:13.5px;cursor:pointer;box-shadow:0 4px 10px color-mix(in srgb, var(--brand) 35%, transparent)}
+.btn.alt{background:var(--chip);color:var(--ink);box-shadow:none}
+.chip{display:inline-block;background:var(--chip);color:var(--ink);padding:4px 11px;border-radius:99px;font-size:11px;margin-right:4px;font-weight:600}
+.nav{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0));background:var(--card);border:1px solid var(--line);border-radius:22px;display:flex;padding:6px 4px;overflow-x:auto;box-shadow:0 10px 26px rgba(80,55,30,.18)}
+.nav button{flex:1;min-width:56px;border:0;background:none;color:var(--muted);font-size:9.5px;font-weight:600;padding:7px 2px;cursor:pointer;border-radius:14px;transition:.15s}
+.nav button span{display:block;font-size:17px;margin-bottom:1px}
+.nav button.on{color:#fff;background:linear-gradient(135deg,var(--brand),color-mix(in srgb, var(--brand) 60%, var(--gold)))}
+.tab{display:none}.tab.on{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.empty{color:var(--muted);text-align:center;padding:16px;font-size:13px;font-style:italic}
+.pill{font-size:10px;padding:2px 9px;border-radius:99px;background:var(--chip);font-weight:600;color:var(--brand2)}
+.status{position:fixed;top:calc(10px + env(safe-area-inset-top,0));right:10px;font-size:10.5px;padding:4px 10px;border-radius:99px;background:var(--card);border:1px solid var(--line);z-index:5;font-weight:600}
+a{color:var(--brand2);font-weight:600}
+details summary{cursor:pointer;color:var(--brand2);font-weight:600}
 </style></head><body>
 <div class="status" id="netstat">●</div>
 <div class="wrap">
-<h1>📘 MEAL Mentor</h1>
+<h1>MEAL Mentor<span class="tag">M&amp;E learning &amp; supervision studio</span></h1>
 <section id="t-dash" class="tab on"></section>
 <section id="t-course" class="tab"></section>
 <section id="t-lib" class="tab"></section>
@@ -42,14 +57,14 @@ a{color:var(--accent2)}
 <section id="t-more" class="tab"></section>
 </div>
 <div class="nav">
-<button data-t="dash" class="on"><span>🏠</span>Home</button>
-<button data-t="course"><span>📚</span>Course</button>
-<button data-t="lib"><span>🗂️</span>Library</button>
-<button data-t="write"><span>✍️</span>Write-up</button>
-<button data-t="assign"><span>📝</span>Tasks</button>
-<button data-t="notes"><span>🗒️</span>Notes</button>
-<button data-t="ask"><span>💬</span>Ask</button>
-<button data-t="more"><span>⚙️</span>More</button>
+<button data-t="dash" class="on"><span>◆</span>Home</button>
+<button data-t="course"><span>▤</span>Course</button>
+<button data-t="lib"><span>▦</span>Library</button>
+<button data-t="write"><span>✎</span>Write-up</button>
+<button data-t="assign"><span>☑</span>Tasks</button>
+<button data-t="notes"><span>▧</span>Notes</button>
+<button data-t="ask"><span>◎</span>Ask</button>
+<button data-t="more"><span>⋯</span>More</button>
 </div>
 <script>
 const $=id=>document.getElementById(id);
@@ -67,17 +82,61 @@ const nid=()=>Date.now()+Math.random().toString(36).slice(2,6);
 
 /* ---- content: 9 modules, abbreviated offline notes ---- */
 const MODULES=[
-{id:'m1',t:'Foundations',n:'Project cycle (design→implement→monitor→evaluate→learn), Theory of Change (inputs→outputs→outcomes→impact + assumptions), logframes (goal/purpose/outputs/activities + indicators).',ex:'Kenya: a county bursary fund ToC — inputs (budget, staff) → outputs (bursaries disbursed) → outcome (retention in school) → impact (county literacy).',q:['Draw a ToC for a programme you know.','What is the difference between an output and an outcome?','Why do logframes include assumptions?']},
-{id:'m2',t:'Resource Mobilisation',n:'Donor mapping (bilateral, multilateral, foundations, county/national), funding mechanisms (grants, PPPs, affirmative action funds), concept notes (1-2 pages: problem, approach, budget ask) vs full proposals.',ex:'Kenya: County Affirmative Action Fund, NGAAF, UWEZO Fund, and donor landscapes like UNDP, FCDO, GIZ active in county programmes.',q:['List 3 funding mechanisms open to a Kenyan county department.','What goes in a concept note that a full proposal expands on?','Map two donors active in your sector.']},
-{id:'m3',t:'Indicators & M&E Plans',n:'SMART indicators, indicator types (input/output/outcome/impact), M&E plan components: indicator, baseline, target, means of verification, frequency, responsibility.',ex:'Indicator: "% of GBV survivors accessing recovery services within 48hrs" — baseline 40%, target 70% by year 2.',q:['Write one SMART indicator for a youth employment programme.','What is a means of verification?','Why set a baseline before a target?']},
-{id:'m4',t:'Budgeting & Donor Reporting',n:'Line-item vs activity-based budgets, indirect/overhead costs, budget variance, narrative vs financial donor reports, reporting calendars.',ex:'A donor requires quarterly financial + narrative reports with a 10% variance threshold before explanation is required.',q:['What is budget variance and why track it?','Name two things a narrative report covers that a financial one does not.']},
-{id:'m5',t:'Research Design',n:'Quant vs qual vs mixed methods, experimental/quasi-experimental/non-experimental designs, sampling (probability vs non-probability), validity & reliability.',ex:'A quasi-experimental design comparing bursary recipients to a matched non-recipient group across similar sub-counties.',q:['When would you choose mixed methods over quant alone?','Define sampling frame.']},
-{id:'m6',t:'Data Collection',n:'Tools: surveys, KIIs, FGDs, observation. Digital tools: KoboToolbox, ODK. Ethics: informed consent, data protection.',ex:'KoboToolbox form for household bursary verification, with GPS and photo capture, used in Kenyan counties.',q:['What ethical steps are needed before a household survey?','Compare a KII and an FGD.']},
-{id:'m7',t:'Statistics & Demography',n:'Descriptive stats (mean, median, mode, std dev), demographic indicators (fertility, mortality, dependency ratio), disaggregation by sex/age/county.',ex:'KNBS 2019 census data used to disaggregate programme reach by county and age group.',q:['What does dependency ratio tell a planner?','When is median more useful than mean?']},
-{id:'m8',t:'Data Management & Software',n:'Data cleaning, coding, storage, tools: Excel, SPSS, R, Power BI, dashboards for county reporting.',ex:'A county M&E dashboard built in Power BI pulling from a KoboToolbox-linked database.',q:['What is data cleaning and why does it matter?','Name one free tool for statistical analysis.']},
-{id:'m9',t:'Accountability & Learning',n:'Feedback mechanisms, complaint-response systems, after-action reviews, adaptive management, knowledge management.',ex:'A GBV centre toll-free feedback line reviewed monthly to adapt service delivery.',q:['What is adaptive management?','Design a simple feedback loop for a programme you support.']}
-];
-const LIB=[['MIT OCW','https://ocw.mit.edu'],['J-PAL','https://www.povertyactionlab.org'],['BetterEvaluation','https://www.betterevaluation.org'],['OECD-DAC criteria','https://www.oecd.org/dac/evaluation'],['World Bank IEG','https://ieg.worldbankgroup.org'],['USAID Learning Lab','https://usaidlearninglab.org'],['KoboToolbox','https://www.kobotoolbox.org'],['KNBS','https://www.knbs.or.ke'],['DHS Program','https://dhsprogram.com'],['Kenya Open Data','https://www.opendata.go.ke'],['APHRC','https://aphrc.org'],['Twaweza','https://twaweza.org'],['CLEAR Anglophone Africa','https://clear-aa.co.za'],['AfrEA','https://afrea.org'],['Africa Evidence Network','https://africaevidencenetwork.org'],['AfDB IDEV','https://idev.afdb.org'],['AERC','https://aercafrica.org'],['KIPPRA','https://kippra.or.ke'],['Kenya School of Government','https://ksg.ac.ke'],['Daystar University','https://daystar.ac.ke'],['University of Nairobi','https://uonbi.ac.ke'],['Strathmore University','https://strathmore.edu'],['Kenyatta University','https://ku.ac.ke'],['Candid Learning','https://learning.candid.org'],['fundsforNGOs','https://www.fundsforngos.org'],['UNDP Evaluation Resource Centre','https://erc.undp.org'],['R for Data Science (free)','https://r4ds.hadley.nz'],['UCLA Stats resources','https://stats.oarc.ucla.edu']];
+{id:'m1',t:'Foundations',n:'Project cycle (design→implement→monitor→evaluate→learn), Theory of Change, logframes.',
+ detail:'Every programme runs on a cycle: design, implement, monitor, evaluate, learn — then the learning feeds the next design. A Theory of Change (ToC) makes the logic explicit: it names your assumptions about how change happens, not just the activities. A logframe turns that logic into a table: goal, purpose, outputs, activities, each with indicators — so everyone can check progress against the same yardstick.',
+ flow:[['Inputs','Budget, staff, partners — what you put in.'],['Activities','What you actually do: trainings, disbursements, campaigns.'],['Outputs','The direct, countable result of activities — e.g. bursaries disbursed.'],['Outcomes','The change in behaviour or condition that outputs should cause — e.g. retention in school.'],['Impact','The long-term, broader change — e.g. county literacy improves.']],
+ ex:'County bursary fund ToC: inputs (budget, officers) → activities (application review, disbursement) → outputs (bursaries paid) → outcome (students stay enrolled) → impact (higher county completion rate). The assumption linking output to outcome: families use the bursary for fees, not other costs.',
+ q:['Draw a ToC for a programme you know.','What is the difference between an output and an outcome?','Why do logframes include assumptions, and what happens if one fails?'],
+ ans:['A ToC is yours to draw — check that each arrow states *why* one level leads to the next, not just *that* it does.','An output is what the programme directly produces and controls (e.g. training sessions held); an outcome is the change in people that the output is meant to cause, which the programme only influences (e.g. skills used in a new job).','Assumptions are the conditions outside your control that the logic depends on. If one fails — e.g. families redirect bursary money — outputs can rise while outcomes stall, so it is worth monitoring assumptions, not only indicators.']},
+{id:'m2',t:'Resource Mobilisation',n:'Donor mapping, funding mechanisms, concept notes vs full proposals.',
+ detail:'Resource mobilisation starts with knowing the landscape: who funds your sector, at what scale, and on what terms. A concept note is a short, persuasive first pitch (1–2 pages) that earns an invitation to submit a full proposal — it should never try to do the proposal\'s job of covering every detail.',
+ flow:[['Map the field','Identify bilateral, multilateral, foundation and county/national funders active in your sector.'],['Match fit','Check each funder\'s priorities and ceiling against your programme.'],['Concept note','A tight pitch: the problem, your approach, the ask.'],['Full proposal','Expands the concept note: objectives, budget, M&E plan, risk.'],['Negotiate & report','Agree terms, then deliver against the reporting calendar.']],
+ ex:'Kenya: the County Affirmative Action Fund, NGAAF and UWEZO Fund sit alongside donors like UNDP, FCDO and GIZ, who often co-fund county programmes through concept-note calls before a full proposal stage.',
+ q:['List 3 funding mechanisms open to a Kenyan county department.','What goes in a concept note that a full proposal expands on?','Map two donors active in your sector and their priority areas.'],
+ ans:['For example: county affirmative action funds, national government conditional grants, and bilateral/multilateral donor co-financing.','A concept note states the problem, your proposed approach and the funding ask in brief; the full proposal adds detailed objectives, a full budget, an M&E plan and risk analysis.','Your map is specific to your sector — the test is whether you can name their stated priorities, not just their name.']},
+{id:'m3',t:'Indicators & M&E Plans',n:'SMART indicators, indicator types, M&E plan components.',
+ detail:'An indicator is only useful if it is Specific, Measurable, Achievable, Relevant and Time-bound. An M&E plan turns each indicator into a tracking system: baseline, target, means of verification, frequency and who is responsible — without this table, indicators are just good intentions.',
+ flow:[['Define the indicator','What exactly will you count or measure?'],['Set the baseline','Where does this stand today?'],['Set the target','What change, by when?'],['Means of verification','Where will the number come from?'],['Assign responsibility','Who collects it, how often?']],
+ ex:'Indicator: "% of GBV survivors accessing recovery services within 48 hours." Baseline 40%, target 70% by year 2, verified via centre intake logs, reviewed quarterly by the M&E officer.',
+ q:['Write one SMART indicator for a youth employment programme.','What is a means of verification, and why does it matter?','Why set a baseline before a target?'],
+ ans:['Check it against all five letters — e.g. "% of enrolled youth employed within 6 months of training completion" is specific and time-bound; add your own target and measurement source.','It is the actual source of the data (a register, a survey, a report) — without naming it, an indicator cannot be audited or trusted.','Without a baseline, a target is a guess rather than a measured change — you cannot tell if you moved the needle or just described where you hoped to land.']},
+{id:'m4',t:'Budgeting & Donor Reporting',n:'Budget types, variance, narrative vs financial reporting.',
+ detail:'Budgets are either line-item (by cost category) or activity-based (by what the money achieves) — most donors want to see both. Variance is the gap between planned and actual spend; most donors only require an explanation once variance crosses a set threshold. Reporting then has two halves that must agree: the narrative tells the story, the financials prove it.',
+ flow:[['Plan the budget','Line items and/or activities, with an indirect cost rate.'],['Track spend','Compare actual to planned monthly.'],['Flag variance','Explain any gap past the donor\'s threshold.'],['Narrative report','What happened, what changed, what\'s next.'],['Financial report','The numbers that back the narrative.']],
+ ex:'A donor requires quarterly reports with a 10% variance threshold — spend 12% under on a training line, and the next report must explain why (e.g. a venue cost fell through).',
+ q:['What is budget variance and why track it?','Name two things a narrative report covers that a financial one does not.','Why might a donor set a variance threshold instead of requiring an explanation for any change?'],
+ ans:['Variance is the difference between budgeted and actual spend; tracking it catches problems (under-delivery, overspend) early enough to correct course mid-grant.','A narrative covers what was achieved, challenges faced and lessons learned — context a spreadsheet cannot carry.','A threshold keeps reporting proportionate — minor, expected fluctuations don\'t need justification, so attention goes to variances big enough to signal a real issue.']},
+{id:'m5',t:'Research Design',n:'Quant vs qual vs mixed methods, sampling, validity.',
+ detail:'The method should follow the question. Quantitative work answers "how much/how many," qualitative answers "why/how," and mixed methods combine both when a number alone would mislead. Sampling decides whose data you collect — probability sampling lets you generalise, non-probability sampling trades that for depth or access.',
+ flow:[['Pose the question','What do you actually need to know?'],['Pick the design','Quant, qual, or mixed — and why.'],['Choose sampling','Who, how many, how selected.'],['Check validity','Does it measure what you intend?'],['Check reliability','Would it give consistent results if repeated?']],
+ ex:'A quasi-experimental design compares bursary recipients to a matched non-recipient group in similar sub-counties — close to a true experiment, without random assignment, which would be hard to justify ethically here.',
+ q:['When would you choose mixed methods over quant alone?','Define sampling frame.','What is the difference between validity and reliability?'],
+ ans:['When numbers alone can\'t explain why an effect happened — e.g. enrolment dropped, and you need qualitative interviews to understand the cause behind the statistic.','The sampling frame is the actual list or source you draw your sample from — e.g. a county\'s bursary applicant register.','Validity asks whether you are measuring the right thing; reliability asks whether the measurement is consistent. A tool can be reliable but invalid (consistently measuring the wrong thing).']},
+{id:'m6',t:'Data Collection',n:'Survey/KII/FGD tools, digital tools, ethics.',
+ detail:'Pick the tool to match the question and the respondent: structured surveys for breadth, Key Informant Interviews (KIIs) for expert depth, Focus Group Discussions (FGDs) for shared/contested views, observation when self-report is unreliable. Every method needs informed consent and a data protection plan before a single response is collected.',
+ flow:[['Design the tool','Survey, KII guide, FGD guide, or observation checklist.'],['Pilot it','Test with a small group, fix confusing questions.'],['Get consent','Explain purpose, risks, and how data will be used.'],['Collect','In person or via a digital tool.'],['Secure the data','Store and anonymise appropriately.']],
+ ex:'A KoboToolbox form for household bursary verification, with GPS tagging and photo capture, is widely used across Kenyan counties for field data collection, even with intermittent connectivity.',
+ q:['What ethical steps are needed before a household survey?','Compare a KII and an FGD.','Why pilot a data collection tool before full rollout?'],
+ ans:['At minimum: informed consent, clarity on how data will be used and stored, and a way to protect respondent identity where sensitive information is involved.','A KII is a one-on-one conversation with someone who has specific expertise or authority; an FGD draws out shared or contrasting views from a group, useful when group dynamics matter.','Piloting catches confusing wording, technical glitches and timing issues before they corrupt your full dataset — a cheap fix before data collection versus an expensive one after.']},
+{id:'m7',t:'Statistics & Demography',n:'Descriptive stats, demographic indicators, disaggregation.',
+ detail:'Descriptive statistics (mean, median, mode, standard deviation) summarise a dataset in a few numbers. Demographic indicators — fertility rate, mortality rate, dependency ratio — describe a population\'s structure. Disaggregating by sex, age or county is often where the real policy insight hides, since a county-wide average can mask sharp local gaps.',
+ flow:[['Collect raw data','Numbers from your survey or admin records.'],['Summarise','Mean, median, mode, spread.'],['Disaggregate','By sex, age, county, or other relevant group.'],['Compare to demographics','Fertility, mortality, dependency ratio context.'],['Interpret','What does the pattern mean for your programme?']],
+ ex:'KNBS 2019 census data lets a county disaggregate bursary reach by sub-county and age group, often revealing that an apparently even county average hides sharp gaps between sub-counties.',
+ q:['What does dependency ratio tell a planner?','When is median more useful than mean?','Why disaggregate data by county rather than reporting a national or county-wide average alone?'],
+ ans:['It shows how many dependents (children and elderly) each working-age person supports — a high ratio signals pressure on the working population and on services.','When the data has outliers or is skewed, the median isn\'t pulled off-centre the way the mean is — e.g. a few very high incomes won\'t distort a median income figure.','Averages can hide sharp disparities between areas — a county average can look fine while specific sub-counties are badly underserved, which disaggregation reveals.']},
+{id:'m8',t:'Data Management & Software',n:'Cleaning, coding, storage, software tools.',
+ detail:'Raw data is rarely usable as collected: cleaning catches duplicate entries, impossible values and inconsistent coding before analysis begins. The right tool depends on scale and need — spreadsheets for small datasets, SPSS/R for statistical analysis, Power BI for live dashboards.',
+ flow:[['Clean','Remove duplicates, fix impossible values.'],['Code','Standardise categories (e.g. consistent sub-county names).'],['Store securely','Backed up, access-controlled.'],['Analyse','Spreadsheet, SPSS, or R depending on scale.'],['Visualise','Dashboards for ongoing county reporting.']],
+ ex:'A county M&E dashboard built in Power BI, pulling from a KoboToolbox-linked database, lets officers see bursary disbursement in near real time rather than waiting for a quarterly report.',
+ q:['What is data cleaning and why does it matter?','Name one free tool for statistical analysis.','What is the risk of skipping data cleaning before analysis?'],
+ ans:['Data cleaning is correcting errors, duplicates and inconsistencies before analysis — skipping it means your conclusions can rest on faulty numbers without anyone noticing.','R is a strong free option (see the Library tab for a free R for Data Science resource).','Uncaught errors can silently distort your results — a few duplicate records or miscoded entries can shift an average or a trend without being visibly wrong.']},
+{id:'m9',t:'Accountability & Learning',n:'Feedback mechanisms, adaptive management, knowledge management.',
+ detail:'Accountability means the people a programme serves have a real channel to raise concerns and get a response — not just a suggestion box no one checks. Adaptive management closes the loop: using what you learn, including complaints, to actually change how the programme runs, rather than filing lessons away unused.',
+ flow:[['Open a channel','Feedback line, complaints desk, community meetings.'],['Log it','Every piece of feedback recorded, not just the serious ones.'],['Review','Regular review — monthly or quarterly.'],['Adapt','Change the programme based on what you learned.'],['Share the learning','So the next design starts smarter.']],
+ ex:'A GBV recovery centre\'s toll-free feedback line is reviewed monthly, and service changes — like adjusted opening hours — are made directly from what callers report, closing the loop visibly.',
+ q:['What is adaptive management?','Design a simple feedback loop for a programme you support.','Why log minor complaints, not just serious ones?'],
+ ans:['Adaptive management is deliberately changing a programme\'s design or delivery based on ongoing evidence and feedback, rather than waiting for a fixed evaluation point.','Yours will vary — check it has an intake channel, a review cadence, and a visible step where a change is actually made as a result.','Minor complaints often reveal patterns before they become serious ones — and logging everything also builds trust by showing the channel is genuinely used.']}];
+
 const MILES=['Topic & gap','Problem statement','Objectives & questions','Literature review','Methodology','Data collection','Analysis','Findings','Conclusions','Final edit'];
 
 let S={done:{},q:[],lib:{}};
@@ -90,6 +149,27 @@ function go(t){document.querySelectorAll('.tab').forEach(e=>e.classList.remove('
 document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.t));
 function toast(t){const m=document.createElement('div');m.textContent=t;m.style='position:fixed;left:12px;right:12px;bottom:76px;background:var(--accent2);color:#fff;padding:10px 14px;border-radius:10px;z-index:9;font-size:13px';document.body.appendChild(m);setTimeout(()=>m.remove(),2500)}
 
+async 
+let courseView='',activeStep={},revealed={};
+window.openModule=id=>{courseView=id;activeStep[id]=activeStep[id]??0;renderCourse()};
+window.backToList=()=>{courseView='';renderCourse()};
+window.setStep=(id,i)=>{activeStep[id]=i;renderCourse()};
+window.toggleAns=k=>{revealed[k]=!revealed[k];renderCourse()};
+function renderCourse(){
+ if(!courseView){
+  $('t-course').innerHTML='<h2>9 modules</h2>'+MODULES.map(m=>`<div class="card" style="cursor:pointer" onclick="openModule('${m.id}')"><div class="row" style="border:0;padding:0"><b>${esc(m.t)}</b><input type="checkbox" ${S.done[m.id]?'checked':''} onclick="event.stopPropagation()" onchange="S.done['${m.id}']=this.checked;save();renderCourse();render('dash')"></div><p style="font-size:13px;color:var(--muted);margin:6px 0 0">${esc(m.n)}</p><span class="pill">Open module →</span></div>`).join('');
+  return;
+ }
+ const m=MODULES.find(x=>x.id===courseView),si=activeStep[m.id]||0,step=m.flow[si];
+ $('t-course').innerHTML=`<button class="btn alt" onclick="backToList()">← All modules</button>
+ <h2 style="margin-top:16px">${esc(m.t)}</h2>
+ <div class="card"><p style="font-size:14px;line-height:1.5">${esc(m.detail)}</p></div>
+ <h2>Interactive flow</h2>
+ <div class="card"><div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:4px">${m.flow.map((f,i)=>`<button class="btn ${i===si?'':'alt'}" style="white-space:nowrap" onclick="setStep('${m.id}',${i})">${i+1}. ${esc(f[0])}</button>`).join('')}</div><div class="card" style="margin:10px 0 0;background:var(--chip);box-shadow:none"><b>${esc(step[0])}</b><p style="font-size:13px;margin:6px 0 0">${esc(step[1])}</p></div></div>
+ <h2>Kenyan example</h2><div class="card">${esc(m.ex)}</div>
+ <h2>Self-check</h2>
+ ${m.q.map((q,i)=>{const k=m.id+i;return `<div class="card"><p style="font-size:13px;font-weight:600">${i+1}. ${esc(q)}</p>${revealed[k]?`<p style="font-size:13px;color:var(--muted)">${esc(m.ans[i])}</p><button class="btn alt" onclick="toggleAns('${k}')">Hide</button>`:`<button class="btn alt" onclick="toggleAns('${k}')">Show key idea</button>`}</div>`}).join('')}`;
+}
 async function render(which){
  const done=Object.values(S.done).filter(Boolean).length,cpct=Math.round(done/MODULES.length*100);
  const miles=await all('milestones'),mdone=miles.filter(x=>x.text.trim()).length,wpct=Math.round(mdone/MILES.length*100);
@@ -98,9 +178,7 @@ async function render(which){
   <div class="card"><div class="k">Write-up progress</div><div class="bar"><i style="width:${wpct}%"></i></div><small>${mdone}/${MILES.length} milestones</small></div>
   <div class="card"><div class="k">Ask queue</div><div>${S.q.length} item${S.q.length===1?'':'s'} waiting${S.q.length?' — open Ask when online':''}</div></div>`;
  }
- if(!which||which==='course'){
-  $('t-course').innerHTML='<h2 style="font-size:15px">9 modules</h2>'+MODULES.map(m=>`<div class="card"><div class="row" style="border:0;padding:0"><b>${esc(m.t)}</b><input type="checkbox" ${S.done[m.id]?'checked':''} onchange="S.done['${m.id}']=this.checked;save();render('course');render('dash')"></div><p style="font-size:13px">${esc(m.n)}</p><p style="font-size:12px;color:var(--muted)"><b>Kenyan example:</b> ${esc(m.ex)}</p><details><summary style="font-size:12px;cursor:pointer">Practice questions</summary><ul style="font-size:13px">${m.q.map(q=>`<li>${esc(q)}</li>`).join('')}</ul></details></div>`).join('');
- }
+ if(!which||which==='course'){renderCourse()}
  if(!which||which==='lib'){
   const files=await all('files');
   $('t-lib').innerHTML=`<div class="card"><h2 style="font-size:15px;margin-top:0">Import a file</h2><input type="file" id="fimp"><select id="ftag" style="margin-top:8px">${MODULES.map(m=>`<option value="${m.id}">${esc(m.t)}</option>`).join('')}</select><button class="btn" style="margin-top:8px" onclick="impFile()">Add to library</button></div>
